@@ -58,7 +58,7 @@ public class BlankFragment extends Fragment {
             start = getArguments().getInt(ARG_PARAM1);
             length = getArguments().getInt(ARG_PARAM2);
             food_names = new ArrayList<String>();
-            for (int i = start; i < length; i++) {
+            for (int i = start; i < start + length; i++) {
                 food_names.add("牛奶" + i);
             }
         }
@@ -70,6 +70,7 @@ public class BlankFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_blank, container, false);
         GridView list_food = (GridView) v.findViewById(R.id.list_food);
         adapter = new MyAdapter(getActivity().getApplicationContext(), food_names);
+        list_food.setEmptyView(v.findViewById(R.id.tv_empty));
         list_food.setAdapter(adapter);
         return v;
     }
