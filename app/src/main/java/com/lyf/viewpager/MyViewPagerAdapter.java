@@ -1,45 +1,48 @@
 package com.lyf.viewpager;
 
 import android.app.Activity;
-import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by hc on 2015/11/20.
+ * 
  */
 public class MyViewPagerAdapter extends FragmentStatePagerAdapter implements ViewPager.OnPageChangeListener {
-    private static final String TAG="MyViewPagerAdapter";
-    private Context mContext;
     private List<Fragment> fragments;
     private CustomViewPager mViewPager;
     private int pagerCount;//每页加载GridView中的item数量
     private String type;//顶部横向导航
-    private GestureDetector gestureDetector;//手势
-    private MyOnGestureListener mGestureListener;//手势监听
     private static final int FLING_MIN_DISTANCE = 50;//手势最小滑动距离
     private static final int FLING_MIN_VELOCITY = 100;//手势最小滑动速度
     private boolean isScrolled;//滑动状态标示
     private boolean left = false;//向左滑动
     private boolean right = false;//向右滑动
+    private ViewPagerLeftScrollListener mViewPagerLeftScrollListener;//单个类中ViewPager滑到第一页时的监听
+    private ViewPagerRightScrollListener mViewPagerRightScrollListener;//单个类中ViewPager滑到最后一页时的监听
+
+    public void setmViewPagerLeftScrollListener(ViewPagerLeftScrollListener mViewPagerFirstListener) {
+        this.mViewPagerLeftScrollListener = mViewPagerFirstListener;
+    }
+
+    public void setmViewPagerRightScrollListener(ViewPagerRightScrollListener mViewPagerLastListener) {
+        this.mViewPagerRightScrollListener = mViewPagerLastListener;
+    }
 
     public MyViewPagerAdapter(FragmentManager fm, CustomViewPager viewPager, int pagerCount, Activity activity) {
         super(fm);
-        this.mContext=activity;
         this.mViewPager = viewPager;
         this.pagerCount = pagerCount;
         fragments = new ArrayList<Fragment>();
         mViewPager.addOnPageChangeListener(this);
-        gestureDetector = new GestureDetector(activity, new MyOnGestureListener());
+        //手势
+        GestureDetector gestureDetector = new GestureDetector(activity, new MyOnGestureListener());
         mViewPager.setGestureDetector(gestureDetector);
     }
 
@@ -123,21 +126,29 @@ public class MyViewPagerAdapter extends FragmentStatePagerAdapter implements Vie
                     //多于一页
                     //最后一页并且向左滑动
                     if (mViewPager.getCurrentItem() == getCount() - 1 && isScrolled && left) {
-                        Toast.makeText(mContext, "最后一页并且向左滑动", Toast.LENGTH_SHORT).show();
+                        if (mViewPagerLeftScrollListener != null) {
+                            mViewPagerLeftScrollListener.leftScroll(type);
+                        }
                     }
                     //第一页并且向右滑动
-                    if (mViewPager.getCurrentItem() == 0 && isScrolled&& right ) {
-                        Toast.makeText(mContext, "第一页并且向右滑动", Toast.LENGTH_SHORT).show();
+                    if (mViewPager.getCurrentItem() == 0 && isScrolled && right) {
+                        if (mViewPagerRightScrollListener != null) {
+                            mViewPagerRightScrollListener.rightScroll(type);
+                        }
                     }
                 } else {
                     //只有一页
-                    //向左滑动
-                    if (right) {
-
-                    }
                     //向右滑动
+                    if (right) {
+                        if (mViewPagerRightScrollListener != null) {
+                            mViewPagerRightScrollListener.rightScroll(type);
+                        }
+                    }
+                    //向左滑动
                     if (left) {
-
+                        if (mViewPagerLeftScrollListener != null) {
+                            mViewPagerLeftScrollListener.leftScroll(type);
+                        }
                     }
                 }
                 isScrolled = false;
@@ -145,6 +156,7 @@ public class MyViewPagerAdapter extends FragmentStatePagerAdapter implements Vie
         }
 
     }
+
 
     private class MyOnGestureListener implements GestureDetector.OnGestureListener {
 
@@ -179,14 +191,36 @@ public class MyViewPagerAdapter extends FragmentStatePagerAdapter implements Vie
                 // 左滑动
                 left = true;
                 right = false;
-                Log.i(TAG, "left");
             } else if (e2.getX() - e1.getX() > FLING_MIN_DISTANCE && Math.abs(velocityX) > FLING_MIN_VELOCITY) {
                 // 右滑动
                 left = false;
                 right = true;
-                Log.i(TAG, "right");
             }
             return false;
         }
+    }
+
+    /**
+     * 滑动时不能再往左滑的监听
+     */
+    public interface ViewPagerLeftScrollListener {
+        /**
+         * 此方法描述的是：当每个类中ViewPager滑不动时再向左滑动
+         *
+         * @param typeName 顶部导航的当前类名
+         */
+        void leftScroll(String typeName);
+    }
+
+    /**
+     * 滑动时不能再往右滑的监听
+     */
+    public interface ViewPagerRightScrollListener {
+        /**
+         * 此方法描述的是：当每个类中ViewPager滑不动时再向右滑动
+         *
+         * @param typeName 顶部导航的当前类名
+         */
+        void rightScroll(String typeName);
     }
 }
