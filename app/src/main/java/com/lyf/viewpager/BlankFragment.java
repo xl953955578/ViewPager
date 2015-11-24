@@ -23,7 +23,6 @@ public class BlankFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
 
     // TODO: Rename and change types of parameters
-    private MyAdapter adapter;
     private List<String> food_names;
 
     /**
@@ -62,7 +61,7 @@ public class BlankFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_blank, container, false);
         GridView list_food = (GridView) v.findViewById(R.id.list_food);
-        adapter = new MyAdapter(getActivity().getApplicationContext(), food_names);
+        MyAdapter adapter = new MyAdapter(getActivity().getApplicationContext(), food_names);
         list_food.setEmptyView(v.findViewById(R.id.tv_empty));
         list_food.setAdapter(adapter);
         return v;

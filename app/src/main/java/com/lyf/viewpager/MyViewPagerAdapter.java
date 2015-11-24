@@ -11,9 +11,7 @@ import android.view.MotionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 
- */
+
 public class MyViewPagerAdapter extends FragmentStatePagerAdapter implements ViewPager.OnPageChangeListener {
     private List<Fragment> fragments;
     private CustomViewPager mViewPager;
@@ -27,11 +25,11 @@ public class MyViewPagerAdapter extends FragmentStatePagerAdapter implements Vie
     private ViewPagerLeftScrollListener mViewPagerLeftScrollListener;//单个类中ViewPager滑到第一页时的监听
     private ViewPagerRightScrollListener mViewPagerRightScrollListener;//单个类中ViewPager滑到最后一页时的监听
 
-    public void setmViewPagerLeftScrollListener(ViewPagerLeftScrollListener mViewPagerFirstListener) {
+    public void setViewPagerLeftScrollListener(ViewPagerLeftScrollListener mViewPagerFirstListener) {
         this.mViewPagerLeftScrollListener = mViewPagerFirstListener;
     }
 
-    public void setmViewPagerRightScrollListener(ViewPagerRightScrollListener mViewPagerLastListener) {
+    public void setViewPagerRightScrollListener(ViewPagerRightScrollListener mViewPagerLastListener) {
         this.mViewPagerRightScrollListener = mViewPagerLastListener;
     }
 

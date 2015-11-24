@@ -64,9 +64,9 @@ public class MainActivity extends FragmentActivity implements RadioGroup.OnCheck
         //pagerCount * 2（viewPager要预加载一页）
         viewPagerAdapter.initViewPager(0, pageCount * 2, type);
         //设置滑动时不能再往左滑的监听
-        viewPagerAdapter.setmViewPagerLeftScrollListener(this);
+        viewPagerAdapter.setViewPagerLeftScrollListener(this);
         //设置滑动时不能再往右滑的监听
-        viewPagerAdapter.setmViewPagerRightScrollListener(this);
+        viewPagerAdapter.setViewPagerRightScrollListener(this);
         rg.setOnCheckedChangeListener(this);
     }
 
